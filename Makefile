@@ -13,6 +13,13 @@ EeveeSpotify_CFLAGS = -fobjc-arc -ISources/EeveeSpotifyC/include -Os
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
+internal-stage::
+	# Bundle SwiftProtobuf.framework directly into the package
+	# This allows the DEB to work without external SwiftProtobuf installation
+	mkdir -p $(THEOS_STAGING_DIR)/Library/Frameworks
+	cp -r $(THEOS)/lib/iphone/rootless/SwiftProtobuf.framework $(THEOS_STAGING_DIR)/Library/Frameworks/
+
+# Legacy build step (no longer needed, kept for reference)
 copy-swiftprotobuf:
 	mkdir -p swiftprotobuf && cd swiftprotobuf ;\
 	curl -OL https://github.com/whoeevee/EeveeSpotify/releases/download/swift2.0/org.swift.protobuf.swiftprotobuf_1.26.0_iphoneos-arm.deb ;\
