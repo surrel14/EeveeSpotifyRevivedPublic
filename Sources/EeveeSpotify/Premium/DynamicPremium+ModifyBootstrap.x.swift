@@ -73,12 +73,18 @@ class SpotifySessionDelegateBootstrapHook: ClassHook<NSObject>, SpotifySessionDe
                     }
                     else {
                         UserDefaults.patchType = .requests
-                        // Dispatch to main thread — calling activate() (method swizzling) from
-                        // a URLSession delegate background thread while inside the method being
-                        // swizzled is not thread-safe and causes a first-launch crash.
-                        DispatchQueue.main.async { activatePremiumPatchingGroup() }
+                        // FIX: For v91, BasePremiumPatchingGroup is already activated at init
+                        // to cover the window before the first bootstrap response arrives.
+                        // Calling activatePremiumPatchingGroup() again here would double-activate
+                        // it and also activate NonIOS14PremiumPatchingGroup unnecessarily.
+                        // Only do the full group activation for non-v91 targets.
+                        if EeveeSpotify.hookTarget != .v91 {
+                            // Dispatch to main thread -- calling activate() (method swizzling) from
+                            // a URLSession delegate background thread while inside the method being
+                            // swizzled is not thread-safe and causes a first-launch crash.
+                            DispatchQueue.main.async { activatePremiumPatchingGroup() }
+                        }
                     }
-                    
                 }
                 
                 if UserDefaults.patchType == .requests {
