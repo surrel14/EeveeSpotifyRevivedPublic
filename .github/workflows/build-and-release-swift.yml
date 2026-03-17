@@ -150,6 +150,7 @@ jobs:
 
         ivinject-arm64 "$SPOTIFY_PACKAGE" "$EEVEESPOTIFY_PACKAGE" \
           -i "$EEVEESPOTIFY_ROOTFUL" "$SWIFTPROTOBUF_ROOTFUL" "$OPENSPOTIFYSAFARIEXTENSION" \
+          -r Frameworks/SwiftProtobuf.framework \
           -s - -d --level Optimal
 
     - name: Create Patched Package
